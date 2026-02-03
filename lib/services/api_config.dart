@@ -1,6 +1,6 @@
 // API Configuration
 // Change this to your Node.js backend URL
-const String baseUrl = 'http://localhost:3000/api';
+const String baseUrl = 'https://school-api-2g81.onrender.com/api';
 
 // API Endpoints
 class ApiEndpoints {
