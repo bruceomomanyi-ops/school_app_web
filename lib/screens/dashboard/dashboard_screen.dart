@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../services/api_service.dart';
+import '../../services/auth_service.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -35,7 +36,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void _logout() {
-    ApiService.clearAuth();
+    AuthService.logout();
     Navigator.pushReplacementNamed(context, '/login');
   }
 
@@ -80,7 +81,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         child: Icon(Icons.person, color: Colors.white),
                       ),
                       title: Text(
-                        'Welcome, ${ApiService.role?.toUpperCase() ?? 'User'}',
+                        'Welcome, ${AuthService.role?.toUpperCase() ?? 'User'}',
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,

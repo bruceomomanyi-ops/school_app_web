@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../services/api_service.dart';
+import '../../services/auth_service.dart';
 import '../../models/fee.dart';
 
 class FeesScreen extends StatefulWidget {
@@ -17,7 +18,7 @@ class _FeesScreenState extends State<FeesScreen> {
   String _selectedYear = '2024-2025';
   final List<String> _statuses = ['', 'pending', 'partial', 'paid'];
 
-  bool get _isAdmin => ApiService.role == 'admin' || ApiService.role == 'teacher';
+  bool get _isAdmin => AuthService.role == 'admin' || AuthService.role == 'teacher';
   bool get _canManageFees => _isAdmin;
 
   @override
@@ -32,7 +33,7 @@ class _FeesScreenState extends State<FeesScreen> {
       int? studentId;
       // Parents and students can only see their own fees
       if (!_isAdmin) {
-        studentId = ApiService.userId;
+        studentId = AuthService.userId;
       }
       
       final response = await apiService.getFees(

@@ -8,6 +8,7 @@ import 'package:school_app_web/screens/classes/classes_screen.dart';
 import 'package:school_app_web/screens/grades/grades_screen.dart';
 import 'package:school_app_web/screens/attendance/attendance_screen.dart';
 import 'package:school_app_web/screens/fees/fees_screen.dart';
+import 'package:school_app_web/services/auth_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: '/login',
+      home: const AuthWrapper(),
       routes: {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
@@ -36,6 +37,56 @@ class MyApp extends StatelessWidget {
         '/attendance': (context) => const AttendanceScreen(),
         '/fees': (context) => const FeesScreen(),
       },
+    );
+  }
+}
+
+class AuthWrapper extends StatefulWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  State<AuthWrapper> createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+  bool _isInitialized = false;
+  bool _isAuthenticated = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeAuth();
+  }
+
+  Future<void> _initializeAuth() async {
+    await AuthService.init();
+    final isLoggedIn = await AuthService.isLoggedIn();
+
+    if (mounted) {
+      setState(() {
+        _isInitialized = true;
+        _isAuthenticated = isLoggedIn;
+      });
+    }
+
+    // Navigate based on auth state
+    if (mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_isAuthenticated) {
+          Navigator.pushReplacementNamed(context, '/dashboard');
+        } else {
+          Navigator.pushReplacementNamed(context, '/login');
+        }
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 }

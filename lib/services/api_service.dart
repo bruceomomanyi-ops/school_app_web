@@ -1,42 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'api_config.dart';
+import 'auth_service.dart';
 
 class ApiService {
-  static String? _token;
-  static String? _role;
-  static int? _userId;
-
-  // Getters
-  static String? get token => _token;
-  static String? get role => _role;
-  static int? get userId => _userId;
-  static bool get isAuthenticated => _token != null;
-
-  // Set auth data
-  static void setAuth(String token, String role, int userId) {
-    _token = token;
-    _role = role;
-    _userId = userId;
-  }
-
-  // Clear auth data
-  static void clearAuth() {
-    _token = null;
-    _role = null;
-    _userId = null;
-  }
-
-  // Get headers with auth token
-  Map<String, String> get _headers {
-    final headers = {
-      'Content-Type': 'application/json',
-    };
-    if (_token != null) {
-      headers['Authorization'] = 'Bearer $_token';
-    }
-    return headers;
-  }
+  // Get headers with auth token - uses AuthService for persistent token
+  Map<String, String> get _headers => AuthService.getHeaders();
 
   // Helper method for making GET requests
   Future<dynamic> get(String endpoint, {Map<String, String>? queryParams}) async {
@@ -98,10 +67,11 @@ class ApiService {
     });
     
     if (response['token'] != null) {
-      setAuth(
-        response['token'],
-        response['user']['role'],
-        response['user']['user_id'],
+      await AuthService.saveAuthData(
+        token: response['token'],
+        role: response['user']['role'],
+        userId: response['user']['user_id'],
+        userData: response['user'],
       );
     }
     return response;

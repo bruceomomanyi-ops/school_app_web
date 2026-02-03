@@ -1,0 +1,28 @@
+plugins = []
+headers = []
+redirects = []
+
+[functions]
+
+[functions."*"]
+
+[build]
+publish = "c:\\Users\\Administrator\\school_app_web\\build\\web"
+publishOrigin = "config"
+commandOrigin = "config"
+command = "bash build_flutter.sh"
+
+[build.environment]
+NODE_VERSION = "22"
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]

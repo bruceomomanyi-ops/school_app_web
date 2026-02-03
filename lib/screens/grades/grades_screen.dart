@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../services/api_service.dart';
+import '../../services/auth_service.dart';
 import '../../models/grade.dart';
 
 class GradesScreen extends StatefulWidget {
@@ -17,7 +18,7 @@ class _GradesScreenState extends State<GradesScreen> {
   String _selectedYear = '2024-2025';
   final List<String> _terms = ['term1', 'term2', 'term3'];
 
-  bool get _isAdmin => ApiService.role == 'admin' || ApiService.role == 'teacher';
+  bool get _isAdmin => AuthService.role == 'admin' || AuthService.role == 'teacher';
   bool get _canManageGrades => _isAdmin;
 
   @override
@@ -32,7 +33,7 @@ class _GradesScreenState extends State<GradesScreen> {
       int? studentId;
       // Parents and students can only see their own grades
       if (!_isAdmin) {
-        studentId = ApiService.userId;
+        studentId = AuthService.userId;
       }
 
       final response = await apiService.getGrades(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../services/api_service.dart';
+import '../../services/auth_service.dart';
 import '../../models/attendance.dart';
 
 class AttendanceScreen extends StatefulWidget {
@@ -17,7 +18,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   DateTime? _selectedDate;
   final List<String> _statuses = ['', 'present', 'absent', 'late', 'excused'];
 
-  bool get _isAdmin => ApiService.role == 'admin' || ApiService.role == 'teacher';
+  bool get _isAdmin => AuthService.role == 'admin' || AuthService.role == 'teacher';
   bool get _canManageAttendance => _isAdmin;
 
   @override
@@ -33,7 +34,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       int? studentId;
       // Parents and students can only see their own attendance
       if (!_isAdmin) {
-        studentId = ApiService.userId;
+        studentId = AuthService.userId;
       }
 
       final response = await apiService.getAttendance(
