@@ -34,7 +34,7 @@ class Teacher {
     }
 
     return Teacher(
-      teacherId: json['teacher_id'],
+      teacherId: json['teacher_id'] ?? 0,
       firstName: json['first_name'] ?? '',
       lastName: json['last_name'] ?? '',
       email: json['email'] ?? '',
