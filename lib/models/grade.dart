@@ -45,31 +45,31 @@ class Grade {
 
   factory Grade.fromJson(Map<String, dynamic> json) {
     return Grade(
-      gradeId: json['grade_id'],
-      studentId: json['student_id'] ?? 0,
-      subjectId: json['subject_id'] ?? 0,
-      classId: json['class_id'] ?? 0,
-      teacherId: json['teacher_id'],
-      academicYear: json['academic_year'] ?? '',
+      gradeId: json['gradeId'] ?? json['grade_id'],
+      studentId: json['studentId'] ?? json['student_id'] ?? 0,
+      subjectId: json['subjectId'] ?? json['subject_id'] ?? 0,
+      classId: json['classId'] ?? json['class_id'] ?? 0,
+      teacherId: json['teacherId'] ?? json['teacher_id'],
+      academicYear: json['academicYear'] ?? json['academic_year'] ?? '',
       term: json['term'] ?? '',
-      assignmentScore: json['assignment_score'] != null 
-          ? double.tryParse(json['assignment_score'].toString()) 
+      assignmentScore: json['assignmentScore'] ?? json['assignment_score'] != null 
+          ? double.tryParse((json['assignmentScore'] ?? json['assignment_score']).toString()) 
           : null,
-      examScore: json['exam_score'] != null 
-          ? double.tryParse(json['exam_score'].toString()) 
+      examScore: json['examScore'] ?? json['exam_score'] != null 
+          ? double.tryParse((json['examScore'] ?? json['exam_score']).toString()) 
           : null,
-      totalScore: json['total_score'] != null 
-          ? double.tryParse(json['total_score'].toString()) 
+      totalScore: json['totalScore'] ?? json['total_score'] != null 
+          ? double.tryParse((json['totalScore'] ?? json['total_score']).toString()) 
           : null,
-      studentFirstName: json['first_name'],
-      studentLastName: json['last_name'],
-      admissionNumber: json['admission_number'],
-      subjectName: json['subject_name'],
-      subjectCode: json['subject_code'],
-      className: json['class_name'],
-      teacherFirstName: json['teacher_first_name'],
-      teacherLastName: json['teacher_last_name'],
-      createdAt: json['created_at'],
+      studentFirstName: json['studentFirstName'] ?? json['first_name'],
+      studentLastName: json['studentLastName'] ?? json['last_name'],
+      admissionNumber: json['admissionNumber'] ?? json['admission_number'],
+      subjectName: json['subjectName'] ?? json['subject_name'],
+      subjectCode: json['subjectCode'] ?? json['subject_code'],
+      className: json['className'] ?? json['class_name'],
+      teacherFirstName: json['teacherFirstName'] ?? json['teacher_first_name'],
+      teacherLastName: json['teacherLastName'] ?? json['teacher_last_name'],
+      createdAt: json['createdAt'] ?? json['created_at'],
     );
   }
 

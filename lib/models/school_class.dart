@@ -41,16 +41,16 @@ class SchoolClass {
     }
 
     return SchoolClass(
-      classId: json['class_id'] ?? 0,
-      className: json['class_name'] ?? '',
-      gradeLevel: json['grade_level'] ?? 0,
-      classTeacherId: json['class_teacher_id'],
-      teacherFirstName: json['teacher_first_name'],
-      teacherLastName: json['teacher_last_name'],
-      academicYear: json['academic_year'] ?? '',
+      classId: json['classId'] ?? json['class_id'] ?? 0,
+      className: json['className'] ?? json['class_name'] ?? '',
+      gradeLevel: json['gradeLevel'] ?? json['grade_level'] ?? 0,
+      classTeacherId: json['classTeacherId'] ?? json['class_teacher_id'],
+      teacherFirstName: json['teacherFirstName'] ?? json['teacher_first_name'],
+      teacherLastName: json['teacherLastName'] ?? json['teacher_last_name'],
+      academicYear: json['academicYear'] ?? json['academic_year'] ?? '',
       students: studentsList,
       subjects: subjectsList,
-      createdAt: json['created_at'],
+      createdAt: json['createdAt'] ?? json['created_at'],
     );
   }
 

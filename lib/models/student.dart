@@ -37,22 +37,22 @@ class Student {
 
   factory Student.fromJson(Map<String, dynamic> json) {
     return Student(
-      studentId: json['student_id'] ?? 0,
-      firstName: json['first_name'] ?? '',
-      lastName: json['last_name'] ?? '',
-      dateOfBirth: json['date_of_birth'] ?? '',
+      studentId: json['studentId'] ?? json['student_id'] ?? 0,
+      firstName: json['firstName'] ?? json['first_name'] ?? '',
+      lastName: json['lastName'] ?? json['last_name'] ?? '',
+      dateOfBirth: json['dateOfBirth'] ?? json['date_of_birth'] ?? '',
       gender: json['gender'] ?? '',
-      admissionNumber: json['admission_number'] ?? '',
-      dateAdmitted: json['date_admitted'] ?? '',
-      classId: json['class_id'],
-      className: json['class_name'],
-      gradeLevel: json['grade_level'],
+      admissionNumber: json['admissionNumber'] ?? json['admission_number'] ?? '',
+      dateAdmitted: json['dateAdmitted'] ?? json['date_admitted'] ?? '',
+      classId: json['classId'] ?? json['class_id'],
+      className: json['className'] ?? json['class_name'],
+      gradeLevel: json['gradeLevel'] ?? json['grade_level'],
       address: json['address'],
       phone: json['phone'],
       status: json['status'],
-      parentId: json['parent_user_id'] ?? json['parent_id'],
-      parentEmail: json['parent_email'],
-      createdAt: json['created_at'],
+      parentId: json['parentUserId'] ?? json['parent_user_id'] ?? json['parentId'] ?? json['parent_id'],
+      parentEmail: json['parentEmail'] ?? json['parent_email'],
+      createdAt: json['createdAt'] ?? json['created_at'],
     );
   }
 

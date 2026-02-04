@@ -29,22 +29,22 @@ class Fee {
 
   factory Fee.fromJson(Map<String, dynamic> json) {
     return Fee(
-      feeId: json['fee_id'],
-      studentId: json['student_id'] ?? 0,
-      feeType: json['fee_type'] ?? '',
-      amount: json['amount'] != null 
-          ? double.tryParse(json['amount'].toString()) ?? 0.0 
+      feeId: json['feeId'] ?? json['fee_id'],
+      studentId: json['studentId'] ?? json['student_id'] ?? 0,
+      feeType: json['feeType'] ?? json['fee_type'] ?? '',
+      amount: (json['amount'] ?? json['amount']) != null 
+          ? double.tryParse((json['amount'] ?? json['amount']).toString()) ?? 0.0 
           : 0.0,
-      paidAmount: json['paid_amount'] != null 
-          ? double.tryParse(json['paid_amount'].toString()) 
+      paidAmount: json['paidAmount'] ?? json['paid_amount'] != null 
+          ? double.tryParse((json['paidAmount'] ?? json['paid_amount']).toString()) 
           : null,
-      paymentStatus: json['payment_status'] ?? '',
-      dueDate: json['due_date'] ?? '',
-      academicYear: json['academic_year'] ?? '',
-      studentFirstName: json['first_name'],
-      studentLastName: json['last_name'],
-      admissionNumber: json['admission_number'],
-      createdAt: json['created_at'],
+      paymentStatus: json['paymentStatus'] ?? json['payment_status'] ?? '',
+      dueDate: json['dueDate'] ?? json['due_date'] ?? '',
+      academicYear: json['academicYear'] ?? json['academic_year'] ?? '',
+      studentFirstName: json['studentFirstName'] ?? json['first_name'],
+      studentLastName: json['studentLastName'] ?? json['last_name'],
+      admissionNumber: json['admissionNumber'] ?? json['admission_number'],
+      createdAt: json['createdAt'] ?? json['created_at'],
     );
   }
 

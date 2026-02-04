@@ -34,17 +34,17 @@ class Teacher {
     }
 
     return Teacher(
-      teacherId: json['teacher_id'] ?? 0,
-      firstName: json['first_name'] ?? '',
-      lastName: json['last_name'] ?? '',
+      teacherId: json['teacherId'] ?? json['teacher_id'] ?? 0,
+      firstName: json['firstName'] ?? json['first_name'] ?? '',
+      lastName: json['lastName'] ?? json['last_name'] ?? '',
       email: json['email'] ?? '',
       phone: json['phone'],
-      subjectSpecialization: json['subject_specialization'] ?? '',
-      hireDate: json['hire_date'],
+      subjectSpecialization: json['subjectSpecialization'] ?? json['subject_specialization'] ?? '',
+      hireDate: json['hireDate'] ?? json['hire_date'],
       salary: json['salary'] != null ? double.tryParse(json['salary'].toString()) : null,
       status: json['status'],
       assignments: assignmentsList,
-      createdAt: json['created_at'],
+      createdAt: json['createdAt'] ?? json['created_at'],
     );
   }
 
@@ -88,14 +88,14 @@ class TeacherAssignment {
 
   factory TeacherAssignment.fromJson(Map<String, dynamic> json) {
     return TeacherAssignment(
-      assignmentId: json['assignment_id'],
-      teacherId: json['teacher_id'] ?? 0,
-      subjectId: json['subject_id'] ?? 0,
-      classId: json['class_id'] ?? 0,
-      academicYear: json['academic_year'] ?? '',
-      subjectName: json['subject_name'],
-      subjectCode: json['subject_code'],
-      className: json['class_name'],
+      assignmentId: json['assignmentId'] ?? json['assignment_id'],
+      teacherId: json['teacherId'] ?? json['teacher_id'] ?? 0,
+      subjectId: json['subjectId'] ?? json['subject_id'] ?? 0,
+      classId: json['classId'] ?? json['class_id'] ?? 0,
+      academicYear: json['academicYear'] ?? json['academic_year'] ?? '',
+      subjectName: json['subjectName'] ?? json['subject_name'],
+      subjectCode: json['subjectCode'] ?? json['subject_code'],
+      className: json['className'] ?? json['class_name'],
     );
   }
 }
