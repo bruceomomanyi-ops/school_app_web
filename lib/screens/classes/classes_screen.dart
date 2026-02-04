@@ -83,8 +83,17 @@ class _ClassesScreenState extends State<ClassesScreen> {
               };
 
               try {
+                final classId = schoolClass?.classId ?? 0;
+                if (isEditing && classId == 0) {
+                  Fluttertoast.showToast(
+                    msg: 'Error: Class ID is missing',
+                    backgroundColor: Colors.red,
+                  );
+                  return;
+                }
+
                 if (isEditing) {
-                  await apiService.updateClass(schoolClass!.classId!, data);
+                  await apiService.updateClass(classId, data);
                   Fluttertoast.showToast(
                     msg: 'Class updated successfully',
                     backgroundColor: Colors.green,

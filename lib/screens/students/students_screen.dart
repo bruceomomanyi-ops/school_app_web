@@ -152,8 +152,17 @@ class _StudentsScreenState extends State<StudentsScreen> {
                   };
 
                   try {
+                    final studentId = student?.studentId ?? 0;
+                    if (isEditing && studentId == 0) {
+                      Fluttertoast.showToast(
+                        msg: 'Error: Student ID is missing',
+                        backgroundColor: Colors.red,
+                      );
+                      return;
+                    }
+
                     if (isEditing) {
-                      await apiService.updateStudent(student!.studentId!, data);
+                      await apiService.updateStudent(studentId, data);
                       Fluttertoast.showToast(
                         msg: 'Student updated successfully',
                         backgroundColor: Colors.green,
@@ -251,7 +260,7 @@ class _StudentsScreenState extends State<StudentsScreen> {
                                   if (value == 'edit') {
                                     _showStudentDialog(student: student);
                                   } else if (value == 'delete') {
-                                    _deleteStudent(student.studentId!);
+                                    _deleteStudent(student.studentId ?? 0);
                                   }
                                 },
                                 itemBuilder: (context) => [

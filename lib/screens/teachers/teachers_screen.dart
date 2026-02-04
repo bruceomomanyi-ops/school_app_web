@@ -92,8 +92,17 @@ class _TeachersScreenState extends State<TeachersScreen> {
               };
 
               try {
+                final teacherId = teacher?.teacherId ?? 0;
+                if (isEditing && teacherId == 0) {
+                  Fluttertoast.showToast(
+                    msg: 'Error: Teacher ID is missing',
+                    backgroundColor: Colors.red,
+                  );
+                  return;
+                }
+
                 if (isEditing) {
-                  await apiService.updateTeacher(teacher!.teacherId!, data);
+                  await apiService.updateTeacher(teacherId, data);
                   Fluttertoast.showToast(
                     msg: 'Teacher updated successfully',
                     backgroundColor: Colors.green,
@@ -201,7 +210,7 @@ class _TeachersScreenState extends State<TeachersScreen> {
                             if (value == 'edit') {
                               _showTeacherDialog(teacher: teacher);
                             } else if (value == 'delete') {
-                              _deleteTeacher(teacher.teacherId!);
+                              _deleteTeacher(teacher.teacherId ?? 0);
                             }
                           },
                           itemBuilder: (context) => [

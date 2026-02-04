@@ -41,7 +41,7 @@ class SchoolClass {
     }
 
     return SchoolClass(
-      classId: json['class_id'],
+      classId: json['class_id'] ?? 0,
       className: json['class_name'] ?? '',
       gradeLevel: json['grade_level'] ?? 0,
       classTeacherId: json['class_teacher_id'],
