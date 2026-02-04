@@ -19,4 +19,5 @@ class ApiEndpoints {
   static const String dashboard = '/dashboard/stats';
   static const String gradeReport = '/grades/report';
   static const String attendanceSummary = '/attendance/summary';
+  static const String documents = '/documents';
 }

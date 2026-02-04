@@ -8,6 +8,7 @@ import 'package:school_app_web/screens/classes/classes_screen.dart';
 import 'package:school_app_web/screens/grades/grades_screen.dart';
 import 'package:school_app_web/screens/attendance/attendance_screen.dart';
 import 'package:school_app_web/screens/fees/fees_screen.dart';
+import 'package:school_app_web/screens/documents/documents_screen.dart';
 import 'package:school_app_web/services/auth_service.dart';
 
 void main() {
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         '/grades': (context) => const GradesScreen(),
         '/attendance': (context) => const AttendanceScreen(),
         '/fees': (context) => const FeesScreen(),
+        '/documents': (context) => const DocumentsScreen(),
       },
     );
   }

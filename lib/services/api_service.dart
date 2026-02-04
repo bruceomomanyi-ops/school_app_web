@@ -231,6 +231,34 @@ class ApiService {
   Future<dynamic> payFee(int feeId, double amount) async {
     return await put('${ApiEndpoints.fees}/$feeId/pay', body: {'paid_amount': amount});
   }
+
+  // Documents
+  Future<dynamic> getDocuments({String? category, String? search}) async {
+    final queryParams = <String, String>{};
+    if (category != null) queryParams['category'] = category;
+    if (search != null) queryParams['search'] = search;
+    
+    return await get(ApiEndpoints.documents, queryParams: queryParams.isEmpty ? null : queryParams);
+  }
+
+  Future<dynamic> getDocument(int id) async {
+    return await get('${ApiEndpoints.documents}/$id');
+  }
+
+  Future<dynamic> uploadDocument(String filePath, String title, {String? description, String? category, bool? isPublic}) async {
+    // For multipart form data, we need to use a different approach
+    // This is a simplified version - in production, use http.MultipartRequest
+    return await post(ApiEndpoints.documents, body: {
+      'title': title,
+      'description': description ?? '',
+      'category': category ?? 'general',
+      'is_public': (isPublic ?? true).toString(),
+    });
+  }
+
+  Future<dynamic> deleteDocument(int id) async {
+    return await delete('${ApiEndpoints.documents}/$id');
+  }
 }
 
 // Custom exception for API errors

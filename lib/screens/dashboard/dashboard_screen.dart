@@ -224,6 +224,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         label: 'Fees',
                         onTap: () => Navigator.pushNamed(context, '/fees'),
                       ),
+                      _QuickActionButton(
+                        icon: Icons.file_present,
+                        label: 'Documents',
+                        onTap: () => Navigator.pushNamed(context, '/documents'),
+                      ),
                     ],
                   ),
                 ],

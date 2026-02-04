@@ -229,7 +229,8 @@ class _StudentsScreenState extends State<StudentsScreen> {
                               leading: CircleAvatar(
                                 backgroundColor: Colors.deepPurple[100],
                                 child: Text(
-                                  student.firstName[0] + student.lastName[0],
+                                  (student.firstName.isNotEmpty ? student.firstName[0] : '?') +
+                                  (student.lastName.isNotEmpty ? student.lastName[0] : '?'),
                                   style: const TextStyle(color: Colors.deepPurple),
                                 ),
                               ),

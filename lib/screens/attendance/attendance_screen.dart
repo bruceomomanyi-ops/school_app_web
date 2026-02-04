@@ -86,7 +86,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   );
                 }).toList(),
                 onChanged: (value) {
-                  selectedStatus = value!;
+                  selectedStatus = value ?? 'present';
                 },
               ),
             ],

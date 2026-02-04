@@ -171,7 +171,7 @@ class _GradesScreenState extends State<GradesScreen> {
                       );
                     }).toList(),
                     onChanged: (value) {
-                      setState(() => _selectedTerm = value!);
+                      setState(() => _selectedTerm = value ?? _terms[0]);
                       _loadGrades();
                     },
                   ),
