@@ -53,8 +53,9 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
     if (result != null) {
       setState(() => _isLoading = true);
       try {
-        await apiService.uploadDocument(
-          result['filePath'] as String,
+        await apiService.uploadDocumentBytes(
+          result['bytes'] as List<int>,
+          result['fileName'] as String,
           result['title'] as String,
           description: result['description'] as String?,
           category: result['category'] as String?,
@@ -148,9 +149,9 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
       case 'exam':
         return Icons.assignment;
       case 'other':
-        return Icons.insert_drive_file;
+        return Icons.folder;
       default:
-        return Icons.file_present;
+        return Icons.insert_drive_file;
     }
   }
 
@@ -169,9 +170,10 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
         ],
       ),
       floatingActionButton: _isAdmin
-          ? FloatingActionButton(
+          ? FloatingActionButton.extended(
               onPressed: _uploadDocument,
-              child: const Icon(Icons.upload),
+              icon: const Icon(Icons.upload),
+              label: const Text('Upload'),
             )
           : null,
       body: Column(
@@ -180,12 +182,14 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
             padding: const EdgeInsets.all(16.0),
             child: DropdownButtonFormField<String>(
               value: _selectedCategory,
-              decoration: const InputDecoration(labelText: 'Category'),
+              decoration: const InputDecoration(
+                labelText: 'Filter by Category',
+                border: OutlineInputBorder(),
+              ),
               items: _categories.map((category) {
-                String display = category.isEmpty ? 'All' : category[0].toUpperCase() + category.substring(1);
                 return DropdownMenuItem(
                   value: category,
-                  child: Text(display),
+                  child: Text(category.isEmpty ? 'All Categories' : category[0].toUpperCase() + category.substring(1)),
                 );
               }).toList(),
               onChanged: (value) {
@@ -217,27 +221,32 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(doc.categoryDisplay),
-                                  Text('${doc.formattedFileSize} • ${doc.uploadedByEmail ?? 'Unknown'}'),
+                                  Text(doc.description ?? '', maxLines: 2, overflow: TextOverflow.ellipsis),
+                                  Text('Category: ${doc.category} | Uploaded: ${doc.createdAt?.substring(0, 10) ?? 'N/A'}'),
                                 ],
                               ),
-                              trailing: PopupMenuButton<String>(
-                                onSelected: (value) {
-                                  if (value == 'view') {
-                                    _viewDocument(doc);
-                                  } else if (value == 'delete' && _isAdmin) {
-                                    _deleteDocument(doc);
-                                  }
-                                },
-                                itemBuilder: (context) => [
-                                  const PopupMenuItem(value: 'view', child: Text('View/Download')),
-                                  if (_isAdmin)
-                                    const PopupMenuItem(
-                                      value: 'delete',
-                                      child: Text('Delete', style: TextStyle(color: Colors.red)),
+                              isThreeLine: true,
+                              trailing: _isAdmin
+                                  ? PopupMenuButton<String>(
+                                      onSelected: (value) {
+                                        if (value == 'delete') {
+                                          _deleteDocument(doc);
+                                        } else if (value == 'view') {
+                                          _viewDocument(doc);
+                                        }
+                                      },
+                                      itemBuilder: (context) => [
+                                        const PopupMenuItem(value: 'view', child: Text('View/Download')),
+                                        const PopupMenuItem(
+                                          value: 'delete',
+                                          child: Text('Delete', style: TextStyle(color: Colors.red)),
+                                        ),
+                                      ],
+                                    )
+                                  : IconButton(
+                                      icon: const Icon(Icons.download),
+                                      onPressed: () => _viewDocument(doc),
                                     ),
-                                ],
-                              ),
                             ),
                           );
                         },
@@ -261,7 +270,8 @@ class _UploadDocumentDialogState extends State<UploadDocumentDialog> {
   final _descriptionController = TextEditingController();
   String _selectedCategory = 'general';
   bool _isPublic = true;
-  String _filePath = '';
+  List<int>? _fileBytes;
+  String _fileName = '';
 
   final List<String> _categories = ['general', 'report', 'notice', 'syllabus', 'exam', 'other'];
 
@@ -280,7 +290,8 @@ class _UploadDocumentDialogState extends State<UploadDocumentDialog> {
 
     if (result != null) {
       setState(() {
-        _filePath = result.files.single.path ?? '';
+        _fileBytes = result.files.single.bytes;
+        _fileName = result.files.single.name;
       });
     } else {
       Fluttertoast.showToast(
@@ -335,13 +346,13 @@ class _UploadDocumentDialogState extends State<UploadDocumentDialog> {
             ElevatedButton.icon(
               onPressed: _selectFile,
               icon: const Icon(Icons.attach_file),
-              label: Text(_filePath.isEmpty ? 'Select PDF File' : 'File Selected'),
+              label: Text(_fileName.isEmpty ? 'Select PDF File' : 'File Selected'),
             ),
-            if (_filePath.isNotEmpty)
+            if (_fileName.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(
-                  _filePath.split('/').last,
+                  _fileName,
                   style: TextStyle(color: Colors.grey[600]),
                 ),
               ),
@@ -362,12 +373,20 @@ class _UploadDocumentDialogState extends State<UploadDocumentDialog> {
               );
               return;
             }
+            if (_fileBytes == null || _fileBytes!.isEmpty) {
+              Fluttertoast.showToast(
+                msg: 'Please select a PDF file',
+                backgroundColor: Colors.red,
+              );
+              return;
+            }
             Navigator.pop(context, {
               'title': _titleController.text,
               'description': _descriptionController.text,
               'category': _selectedCategory,
               'isPublic': _isPublic,
-              'filePath': _filePath,
+              'bytes': _fileBytes,
+              'fileName': _fileName,
             });
           },
           child: const Text('Upload'),

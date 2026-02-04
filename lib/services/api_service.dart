@@ -255,14 +255,14 @@ class ApiService {
     return await get('${ApiEndpoints.documents}/$id');
   }
 
-  Future<dynamic> uploadDocument(String filePath, String title, {String? description, String? category, bool? isPublic}) async {
+  Future<dynamic> uploadDocumentBytes(List<int> fileBytes, String fileName, String title, {String? description, String? category, bool? isPublic}) async {
     final uri = Uri.parse('$baseUrl${ApiEndpoints.documents}');
     
     final request = http.MultipartRequest('POST', uri);
     request.headers.addAll(_headers);
     
-    // Add the file
-    request.files.add(await http.MultipartFile.fromPath('file', filePath));
+    // Add the file using bytes (works on both web and mobile)
+    request.files.add(http.MultipartFile.fromBytes('file', fileBytes, filename: fileName));
     
     // Add form fields
     request.fields['title'] = title;
