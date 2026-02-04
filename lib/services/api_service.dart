@@ -256,14 +256,32 @@ class ApiService {
   }
 
   Future<dynamic> uploadDocument(String filePath, String title, {String? description, String? category, bool? isPublic}) async {
-    // For multipart form data, we need to use a different approach
-    // This is a simplified version - in production, use http.MultipartRequest
-    return await post(ApiEndpoints.documents, body: {
-      'title': title,
-      'description': description ?? '',
-      'category': category ?? 'general',
-      'is_public': (isPublic ?? true).toString(),
-    });
+    final uri = Uri.parse('$baseUrl${ApiEndpoints.documents}');
+    
+    final request = http.MultipartRequest('POST', uri);
+    request.headers.addAll(_headers);
+    
+    // Add the file
+    request.files.add(await http.MultipartFile.fromPath('file', filePath));
+    
+    // Add form fields
+    request.fields['title'] = title;
+    if (description != null) request.fields['description'] = description;
+    request.fields['category'] = category ?? 'general';
+    request.fields['is_public'] = (isPublic ?? true).toString();
+    
+    final response = await request.send();
+    final responseBody = await response.stream.bytesToString();
+    
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return jsonDecode(responseBody);
+    } else {
+      final body = jsonDecode(responseBody);
+      throw ApiException(
+        message: body['error'] ?? body['message'] ?? 'Upload failed',
+        statusCode: response.statusCode,
+      );
+    }
   }
 
   Future<dynamic> deleteDocument(int id) async {
