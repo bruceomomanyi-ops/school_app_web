@@ -10,6 +10,9 @@ FLUTTER_SDK="$FLUTTER_DIR/flutter"
 
 echo "Installing Flutter..."
 
+# Ensure Flutter directory exists
+mkdir -p "$FLUTTER_DIR"
+
 # Use cached Flutter if available
 if [ -d "$CACHE_DIR/flutter" ]; then
     echo "Using cached Flutter..."
