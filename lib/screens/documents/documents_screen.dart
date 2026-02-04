@@ -288,10 +288,14 @@ class _UploadDocumentDialogState extends State<UploadDocumentDialog> {
       allowedExtensions: ['pdf'],
     );
 
-    if (result != null) {
+    if (result != null && result.files.isNotEmpty) {
+      final file = result.files.single;
+      
+      // Store filename
       setState(() {
-        _fileBytes = result.files.single.bytes;
-        _fileName = result.files.single.name;
+        _fileName = file.name;
+        // Get bytes (web) or path (mobile) for upload
+        _fileBytes = file.bytes;
       });
     } else {
       Fluttertoast.showToast(
@@ -343,19 +347,39 @@ class _UploadDocumentDialogState extends State<UploadDocumentDialog> {
               },
             ),
             const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: _selectFile,
-              icon: const Icon(Icons.attach_file),
-              label: Text(_fileName.isEmpty ? 'Select PDF File' : 'File Selected'),
-            ),
-            if (_fileName.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  _fileName,
-                  style: TextStyle(color: Colors.grey[600]),
+            GestureDetector(
+              onTap: _selectFile,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.deepPurple),
+                  borderRadius: BorderRadius.circular(8),
+                  color: _fileName.isNotEmpty 
+                      ? Colors.deepPurple.withOpacity(0.1) 
+                      : Colors.transparent,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      _fileName.isNotEmpty ? Icons.check_circle : Icons.attach_file,
+                      color: _fileName.isNotEmpty ? Colors.green : Colors.deepPurple,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        _fileName.isEmpty 
+                            ? 'Tap to select PDF file' 
+                            : _fileName,
+                        style: TextStyle(
+                          color: _fileName.isNotEmpty ? Colors.deepPurple : Colors.grey[600],
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
               ),
+            ),
           ],
         ),
       ),
