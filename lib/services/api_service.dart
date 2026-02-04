@@ -256,32 +256,27 @@ class ApiService {
   }
 
   Future<dynamic> uploadDocumentBytes(List<int> fileBytes, String fileName, String title, {String? description, String? category, bool? isPublic}) async {
-    final uri = Uri.parse('$baseUrl${ApiEndpoints.documents}');
+    // Convert bytes to base64
+    final base64Data = base64Encode(fileBytes);
     
-    final request = http.MultipartRequest('POST', uri);
-    request.headers.addAll(_headers);
+    final uri = Uri.parse('$baseUrl/documents/base64');
+    final response = await http.post(
+      uri,
+      headers: {
+        ..._headers,
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'title': title,
+        'description': description ?? '',
+        'file_data': base64Data,
+        'filename': fileName,
+        'category': category ?? 'general',
+        'is_public': (isPublic ?? true).toString(),
+      }),
+    );
     
-    // Add the file using bytes (works on both web and mobile)
-    request.files.add(http.MultipartFile.fromBytes('file', fileBytes, filename: fileName));
-    
-    // Add form fields
-    request.fields['title'] = title;
-    if (description != null) request.fields['description'] = description;
-    request.fields['category'] = category ?? 'general';
-    request.fields['is_public'] = (isPublic ?? true).toString();
-    
-    final response = await request.send();
-    final responseBody = await response.stream.bytesToString();
-    
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return jsonDecode(responseBody);
-    } else {
-      final body = jsonDecode(responseBody);
-      throw ApiException(
-        message: body['error'] ?? body['message'] ?? 'Upload failed',
-        statusCode: response.statusCode,
-      );
-    }
+    return _handleResponse(response);
   }
 
   Future<dynamic> deleteDocument(int id) async {
