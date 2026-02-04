@@ -85,93 +85,101 @@ class _StudentsScreenState extends State<StudentsScreen> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(isEditing ? 'Edit Student' : 'Add Student'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: firstNameController,
-                decoration: const InputDecoration(labelText: 'First Name'),
+      builder: (context) {
+        String selectedGender = student?.gender ?? 'male';
+        
+        return StatefulBuilder(
+          builder: (context, setState) => AlertDialog(
+            title: Text(isEditing ? 'Edit Student' : 'Add Student'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: firstNameController,
+                    decoration: const InputDecoration(labelText: 'First Name'),
+                  ),
+                  TextField(
+                    controller: lastNameController,
+                    decoration: const InputDecoration(labelText: 'Last Name'),
+                  ),
+                  TextField(
+                    controller: dobController,
+                    decoration: const InputDecoration(labelText: 'Date of Birth (YYYY-MM-DD)'),
+                  ),
+                  DropdownButtonFormField<String>(
+                    value: selectedGender,
+                    decoration: const InputDecoration(labelText: 'Gender'),
+                    items: ['male', 'female', 'other'].map((g) {
+                      return DropdownMenuItem(value: g, child: Text(g.toUpperCase()));
+                    }).toList(),
+                    onChanged: (v) {
+                      setState(() => selectedGender = v ?? 'male');
+                    },
+                  ),
+                  TextField(
+                    controller: admissionController,
+                    decoration: const InputDecoration(labelText: 'Admission Number'),
+                  ),
+                  TextField(
+                    controller: addressController,
+                    decoration: const InputDecoration(labelText: 'Address'),
+                  ),
+                  TextField(
+                    controller: phoneController,
+                    decoration: const InputDecoration(labelText: 'Phone'),
+                    keyboardType: TextInputType.phone,
+                  ),
+                ],
               ),
-              TextField(
-                controller: lastNameController,
-                decoration: const InputDecoration(labelText: 'Last Name'),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
               ),
-              TextField(
-                controller: dobController,
-                decoration: const InputDecoration(labelText: 'Date of Birth (YYYY-MM-DD)'),
-              ),
-              DropdownButtonFormField<String>(
-                value: student?.gender ?? 'male',
-                decoration: const InputDecoration(labelText: 'Gender'),
-                items: ['male', 'female', 'other'].map((g) {
-                  return DropdownMenuItem(value: g, child: Text(g.toUpperCase()));
-                }).toList(),
-                onChanged: (v) {},
-              ),
-              TextField(
-                controller: admissionController,
-                decoration: const InputDecoration(labelText: 'Admission Number'),
-              ),
-              TextField(
-                controller: addressController,
-                decoration: const InputDecoration(labelText: 'Address'),
-              ),
-              TextField(
-                controller: phoneController,
-                decoration: const InputDecoration(labelText: 'Phone'),
-                keyboardType: TextInputType.phone,
+              ElevatedButton(
+                onPressed: () async {
+                  final data = {
+                    'first_name': firstNameController.text,
+                    'last_name': lastNameController.text,
+                    'date_of_birth': dobController.text,
+                    'gender': selectedGender,
+                    'admission_number': admissionController.text,
+                    'date_admitted': DateTime.now().toIso8601String().split('T')[0],
+                    'address': addressController.text,
+                    'phone': phoneController.text,
+                  };
+
+                  try {
+                    if (isEditing) {
+                      await apiService.updateStudent(student!.studentId!, data);
+                      Fluttertoast.showToast(
+                        msg: 'Student updated successfully',
+                        backgroundColor: Colors.green,
+                      );
+                    } else {
+                      await apiService.createStudent(data);
+                      Fluttertoast.showToast(
+                        msg: 'Student created successfully',
+                        backgroundColor: Colors.green,
+                      );
+                    }
+                    Navigator.pop(context);
+                    _loadStudents();
+                  } catch (e) {
+                    Fluttertoast.showToast(
+                      msg: e.toString(),
+                      backgroundColor: Colors.red,
+                    );
+                  }
+                },
+                child: Text(isEditing ? 'Update' : 'Create'),
               ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final data = {
-                'first_name': firstNameController.text,
-                'last_name': lastNameController.text,
-                'date_of_birth': dobController.text,
-                'gender': student?.gender ?? 'male',
-                'admission_number': admissionController.text,
-                'date_admitted': DateTime.now().toIso8601String().split('T')[0],
-                'address': addressController.text,
-                'phone': phoneController.text,
-              };
-
-              try {
-                if (isEditing) {
-                  await apiService.updateStudent(student!.studentId!, data);
-                  Fluttertoast.showToast(
-                    msg: 'Student updated successfully',
-                    backgroundColor: Colors.green,
-                  );
-                } else {
-                  await apiService.createStudent(data);
-                  Fluttertoast.showToast(
-                    msg: 'Student created successfully',
-                    backgroundColor: Colors.green,
-                  );
-                }
-                Navigator.pop(context);
-                _loadStudents();
-              } catch (e) {
-                Fluttertoast.showToast(
-                  msg: e.toString(),
-                  backgroundColor: Colors.red,
-                );
-              }
-            },
-            child: Text(isEditing ? 'Update' : 'Create'),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 

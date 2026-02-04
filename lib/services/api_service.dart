@@ -47,13 +47,23 @@ class ApiService {
 
   // Handle response and errors
   dynamic _handleResponse(http.Response response) {
-    final body = jsonDecode(response.body);
-    
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return body;
-    } else {
+    if (response.body.isEmpty) {
+      return {};
+    }
+    try {
+      final body = jsonDecode(response.body);
+      
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return body;
+      } else {
+        throw ApiException(
+          message: body['error'] ?? body['message'] ?? 'An error occurred',
+          statusCode: response.statusCode,
+        );
+      }
+    } catch (e) {
       throw ApiException(
-        message: body['error'] ?? 'An error occurred',
+        message: 'Failed to parse response: ${e.toString()}',
         statusCode: response.statusCode,
       );
     }

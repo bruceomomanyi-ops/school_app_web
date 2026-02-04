@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:file_picker/file_picker.dart';
 import '../../services/api_service.dart';
 import '../../services/api_config.dart';
 import '../../services/auth_service.dart';
@@ -272,15 +273,21 @@ class _UploadDocumentDialogState extends State<UploadDocumentDialog> {
   }
 
   Future<void> _selectFile() async {
-    // In a real app, use file_picker package
-    // For now, we'll simulate file selection
-    Fluttertoast.showToast(
-      msg: 'File selection would open here (use file_picker package)',
-      backgroundColor: Colors.orange,
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
     );
-    setState(() {
-      _filePath = '/path/to/selected/file.pdf';
-    });
+
+    if (result != null) {
+      setState(() {
+        _filePath = result.files.single.path ?? '';
+      });
+    } else {
+      Fluttertoast.showToast(
+        msg: 'No file selected',
+        backgroundColor: Colors.orange,
+      );
+    }
   }
 
   @override
