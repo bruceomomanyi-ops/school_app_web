@@ -3,8 +3,13 @@
 # Install Flutter for Netlify build
 set -e
 
-# Cache directory for Flutter
+# Remove potentially-corrupt cached Flutter to avoid cp failures
 CACHE_DIR="$HOME/.cache/flutter"
+if [ -d "$CACHE_DIR/flutter" ]; then
+    echo "Removing possibly-corrupt Flutter cache..."
+    rm -rf "$CACHE_DIR/flutter"
+fi
+
 FLUTTER_DIR="/tmp/flutter"
 FLUTTER_SDK="$FLUTTER_DIR/flutter"
 
